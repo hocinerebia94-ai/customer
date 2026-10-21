@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+    
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection health check path
+    match /test/{docId} {
+      allow read: if true;
+    }
+    
+    // Jobs collection: allow customer and technician/admin apps to read and write jobs with valid shape
+    match /jobs/{jobId} {
+      allow read: if true;
+      allow create: if isValidId(jobId)
+        && incoming().customerId is string && incoming().customerId.size() <= 128
+        && incoming().status is string && incoming().status.size() <= 64
+        && incoming().title is string && incoming().title.size() <= 256
+        && incoming().address is string && incoming().address.size() <= 512;
+      allow update: if isValidId(jobId)
+        && incoming().customerId is string && incoming().customerId.size() <= 128
+        && incoming().status is string && incoming().status.size() <= 64;
+      allow delete: if isValidId(jobId);
+    }
+    
+    // Technicians collection
+    match /technicians/{techId} {
+      allow read: if true;
+      allow create, update: if isValidId(techId)
+        && incoming().name is string && incoming().name.size() <= 200;
+      allow delete: if isValidId(techId);
+    }
+    
+    // Inventory collection
+    match /inventory/{itemId} {
+      allow read: if true;
+      allow create, update: if isValidId(itemId)
+        && incoming().name is string && incoming().name.size() <= 200;
+      allow delete: if isValidId(itemId);
+    }
+    
+    // Services collection
+    match /services/{serviceId} {
+      allow read: if true;
+      allow create, update: if isValidId(serviceId)
+        && incoming().name is string && incoming().name.size() <= 200
+        && incoming().basePrice is number;
+      allow delete: if isValidId(serviceId);
+    }
+
+    // Treasury / settlements collection
+    match /treasury/{txId} {
+      allow read, write: if isValidId(txId);
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "Job": {
+      "title": "Job",
+      "description": "Field service jobs/orders in Djelfa",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "technicianId": { "type": "string" },
+        "status": { "type": "string" },
+        "type": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "address": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["customerId", "status", "title", "address", "createdAt"]
+    },
+    "Technician": {
+      "title": "Technician",
+      "description": "Field technicians and fleet workers",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "status": { "type": "string" },
+        "isAvailable": { "type": "boolean" }
+      },
+      "required": ["name", "status"]
+    },
+    "InventoryItem": {
+      "title": "InventoryItem",
+      "description": "HQ inventory and parts",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "quantity": { "type": "number" }
+      },
+      "required": ["name", "quantity"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Service catalog items",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "basePrice": { "type": "number" },
+        "isActive": { "type": "boolean" }
+      },
+      "required": ["name", "basePrice"]
+    }
+  },
+  "firestore": {
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Customer service jobs and dispatch orders"
+    },
+    "/technicians/{technicianId}": {
+      "schema": "Technician",
+      "description": "Technicians roster and fleet"
+    },
+    "/inventory/{itemId}": {
+      "schema": "InventoryItem",
+      "description": "HQ inventory items"
+    },
+    "/services/{serviceId}": {
+      "schema": "Service",
+      "description": "Available catalog services"
+    }
+  }
+}

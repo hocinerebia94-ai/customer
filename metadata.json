@@ -1,0 +1,8 @@
+{
+  "name": "customer app",
+  "description": "Firestore database schema, JSON examples, and security rules for the Field Service Management platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
